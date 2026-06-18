@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>こどもほんや 帳簿</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700&display=swap');
+
+  :root {
+    --cream: #FBF7F0;
+    --yellow: #FFE033;
+    --yellow-light: #FFF5AA;
+    --brown: #3B2A1A;
+    --brown-mid: #7A5C3C;
+    --brown-light: #C9A87A;
+    --green: #5C8A5C;
+    --green-light: #EAF3EA;
+    --red: #C0392B;
+    --red-light: #FDECEA;
+    --blue: #2A6496;
+    --blue-light: #EAF2F8;
+    --border: #E0D4C0;
+    --shadow: 0 2px 8px rgba(59,42,26,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    background: var(--cream);
+    color: var(--brown);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--brown);
+    color: var(--yellow);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.4rem;
+    letter-spacing: .05em;
+  }
+  header span.sub {
+    font-size: .8rem;
+    color: var(--brown-light);
+    margin-left: auto;
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    background: var(--brown);
+    border-bottom: 3px solid var(--yellow);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: var(--brown-light);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: .9rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .2s, background .2s;
+  }
+  .tab-btn:hover { color: #fff; }
+  .tab-btn.active {
+    background: var(--yellow);
+    color: var(--brown);
+    font-weight: 700;
+  }
+
+  /* ── Main ── */
+  main { padding: 24px; max-width: 1100px; margin: 0 auto; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Section header ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.2rem;
+    color: var(--brown);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    color: var(--brown);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ── Form elements ── */
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 140px;
+  }
+  label {
+    font-size: .8rem;
+    color: var(--brown-mid);
+    font-weight: 500;
+  }
+  input[type="text"], input[type="number"], input[type="date"], textarea, select {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: .9rem;
+    color: var(--brown);
+    background: var(--cream);
+    width: 100%;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--yellow);
+    border-color: var(--yellow);
+  }
+  textarea { resize: vertical; min-height: 60px; }
+
+  /* ── Buttons ── */
+  .btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: var(--yellow); color: var(--brown); }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-red { background: var(--red); color: #fff; }
+  .btn-outline {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--brown-mid);
+  }
+  .btn-sm { padding: 5px 12px; font-size: .8rem; }
+  .btn:hover { opacity: .85; }
+
+  /* ── Tables ── */
+  .tbl-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .88rem;
+  }
+  th {
+    background: var(--brown);
+    color: var(--yellow);
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:nth-child(even) td { background: #FDFAF5; }
+  tr:hover td { background: var(--yellow-light); }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .stat-label { font-size: .75rem; color: var(--brown-mid); margin-bottom: 4px; }
+  .stat-value { font-size: 1.6rem; font-weight: 900; color: var(--brown); }
+  .stat-unit { font-size: .75rem; color: var(--brown-mid); }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: .75rem;
+    font-weight: 700;
+  }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-yellow { background: var(--yellow-light); color: #7A6200; }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+
+  /* ── Image preview ── */
+  .img-preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .img-thumb {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .img-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .img-thumb .del-img {
+    position: absolute;
+    top: 2px; right: 2px;
+    background: rgba(0,0,0,.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px;
+    width: 95%;
+    max-width: 640px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,.2);
+  }
+  .modal-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.1rem;
+    color: var(--brown);
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--brown-mid);
+  }
+
+  /* ── Empty state ── */
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--brown-mid);
+    font-size: .9rem;
+  }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+  /* ── Image lightbox ── */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+  .text-right { text-align: right; }
+  .text-red { color: var(--red); }
+  .text-green { color: var(--green); }
+  .fw-bold { font-weight: 700; }
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+
+  .file-input-area {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    font-size: .85rem;
+    color: var(--brown-mid);
+    background: var(--cream);
+  }
+  .file-input-area:hover { border-color: var(--yellow); background: var(--yellow-light); }
+  .file-input-area input[type="file"] { display: none; }
+
+  .child-card {
+    border-left: 4px solid var(--yellow);
+    padding-left: 14px;
+    margin-bottom: 14px;
+  }
+  .child-name { font-weight: 700; font-size: 1rem; }
+  .child-meta { font-size: .8rem; color: var(--brown-mid); margin-top: 2px; }
+
+  .event-selector-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--brown);
+    border-radius: 10px;
+    color: var(--yellow);
+    font-weight: 700;
+    font-size: .9rem;
+  }
+  .event-selector-bar select {
+    background: var(--yellow);
+    color: var(--brown);
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span style="font-size:1.6rem;">📚</span>
+  <h1>こどもほんや 帳簿</h1>
+  <span class="sub">ValueBooks ブックギフトプロジェクト</span>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('dashboard')">📊 ダッシュボード</button>
+  <button class="tab-btn" onclick="switchTab('events')">📅 イベント管理</button>
+  <button class="tab-btn" onclick="switchTab('children')">👧 子ども記録</button>
+  <button class="tab-btn" onclick="switchTab('donations')">🎁 寄付管理</button>
+</div>
+
+<main>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="tab-dashboard" class="tab-panel active">
+  <div class="section-header">
+    <div class="section-title">📊 集計ダッシュボード</div>
+    <button class="btn btn-outline btn-sm" onclick="exportExcel()">📥 Excel出力</button>
+    <button class="btn btn-green btn-sm" onclick="exportPublicJSON()">🌐 公開用データ書き出し</button>
+  </div>
+
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">開催回数</div>
+      <div class="stat-value" id="stat-events">0</div>
+      <div class="stat-unit">回</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">参加のべ子ども数</div>
+      <div class="stat-value" id="stat-children">0</div>
+      <div class="stat-unit">人</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ON本 停止冊数（累計）</div>
+      <div class="stat-value" id="stat-onbooks">0</div>
+      <div class="stat-unit">冊</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ON本 金額（累計）</div>
+      <div class="stat-value" id="stat-onamt">0</div>
+      <div class="stat-unit">円</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">子ども本屋売上（累計）</div>
+      <div class="stat-value" id="stat-sales">0</div>
+      <div class="stat-unit">円</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">寄付総額（累計）</div>
+      <div class="stat-value" id="stat-donations">0</div>
+      <div class="stat-unit">円</div>
+    </div>
+  </div>
+
+  <!-- イベント別サマリー -->
+  <div class="card">
+    <div class="card-title">📅 イベント別サマリー</div>
+    <div class="tbl-wrap">
+      <table id="dashboard-event-table">
+        <thead>
+          <tr>
+            <th>開催日</th><th>イベント名</th><th>参加者数</th>
+            <th>売上</th><th>費用</th><th>収支</th>
+            <th>ON本冊数</th><th>ON本金額</th>
+          </tr>
+        </thead>
+        <tbody id="dashboard-event-body">
+          <tr><td colspan="8" class="empty">イベントを登録してください</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 寄付先サマリー -->
+  <div class="card">
+    <div class="card-title">🎁 寄付先サマリー</div>
+    <div class="tbl-wrap">
+      <table id="dashboard-donation-table">
+        <thead>
+          <tr><th>寄付先</th><th>累計金額</th><th>件数</th></tr>
+        </thead>
+        <tbody id="dashboard-donation-body">
+          <tr><td colspan="3" class="empty">寄付記録を登録してください</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EVENTS ═══ -->
+<div id="tab-events" class="tab-panel">
+  <div class="section-header">
+    <div class="section-title">📅 イベント管理</div>
+    <button class="btn btn-primary" onclick="openEventModal()">＋ 新しいイベントを登録</button>
+  </div>
+
+  <div id="events-list">
+    <div class="empty"><div class="empty-icon">📅</div>イベントがまだありません</div>
+  </div>
+</div>
+
+<!-- ═══ CHILDREN ═══ -->
+<div id="tab-children" class="tab-panel">
+  <div class="section-header">
+    <div class="section-title">👧 子ども記録</div>
+    <button class="btn btn-primary" onclick="openChildModal()">＋ 子どもを追加</button>
+  </div>
+
+  <div class="event-selector-bar">
+    🗂️ 表示イベント：
+    <select id="child-event-filter" onchange="renderChildren()">
+      <option value="">すべて</option>
+    </select>
+  </div>
+
+  <div id="children-list">
+    <div class="empty"><div class="empty-icon">👧</div>子どもを登録してください</div>
+  </div>
+</div>
+
+<!-- ═══ DONATIONS ═══ -->
+<div id="tab-donations" class="tab-panel">
+  <div class="section-header">
+    <div class="section-title">🎁 寄付管理</div>
+    <button class="btn btn-primary" onclick="openDonationModal()">＋ 寄付を記録</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎁 寄付先リスト</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>寄付日</th><th>寄付先</th><th>金額</th><th>元イベント</th><th>備考</th><th>操作</th></tr>
+        </thead>
+        <tbody id="donation-body">
+          <tr><td colspan="6" class="empty">寄付記録がありません</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ═══ EVENT MODAL ═══ -->
+<div class="modal-overlay" id="event-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="event-modal-title">📅 イベント登録</span>
+      <button class="modal-close" onclick="closeModal('event-modal')">✕</button>
+    </div>
+    <input type="hidden" id="event-id">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>開催日</label>
+        <input type="date" id="ev-date">
+      </div>
+      <div class="form-group">
+        <label>イベント名</label>
+        <input type="text" id="ev-name" placeholder="例：第1回 こどもほんや">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>場所</label>
+        <input type="text" id="ev-place" placeholder="例：上田市立図書館">
+      </div>
+      <div class="form-group">
+        <label>参加者数（子ども）</label>
+        <input type="number" id="ev-child-count" min="0" placeholder="0">
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;">💰 収支</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>売上合計（円）</label>
+        <input type="number" id="ev-sales" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>費用合計（円）</label>
+        <input type="number" id="ev-cost" min="0" placeholder="0">
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;">📚 ON本記録</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ON本 停止冊数</label>
+        <input type="number" id="ev-onbooks" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>ON本 金額（円）</label>
+        <input type="number" id="ev-onamt" min="0" placeholder="0">
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;color:var(--blue);">📋 経理提出項目</div>
+
+    <div style="font-size:.8rem;font-weight:700;color:var(--brown-mid);margin-bottom:6px;">２．参加費売上</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>参加費単価（円）</label>
+        <input type="number" id="ev-fee-unit" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>参加費人数</label>
+        <input type="number" id="ev-fee-count" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>徴収方法</label>
+        <select id="ev-fee-method">
+          <option value="">選択</option>
+          <option value="現金">現金</option>
+          <option value="キャッシュレス">キャッシュレス</option>
+          <option value="無料">無料</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>参加費合計（自動計算）</label>
+        <input type="text" id="ev-fee-total" readonly placeholder="単価×人数" style="background:#f0f0f0;">
+      </div>
+    </div>
+
+    <div style="font-size:.8rem;font-weight:700;color:var(--brown-mid);margin-bottom:6px;margin-top:10px;">３．子ども本屋売上</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>売上金額合計（円）</label>
+        <input type="number" id="ev-shop-sales" min="0" placeholder="0">
+      </div>
+    </div>
+
+    <div style="font-size:.8rem;font-weight:700;color:var(--brown-mid);margin-bottom:6px;margin-top:10px;">４．参加者への還元</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>還元金額（円・ある場合）</label>
+        <input type="number" id="ev-return-amount" min="0" placeholder="0（ない場合は空白）">
+      </div>
+      <div class="form-group">
+        <label>還元方法</label>
+        <select id="ev-return-method">
+          <option value="">なし / 選択</option>
+          <option value="現金">現金</option>
+          <option value="ギフト券">ギフト券</option>
+          <option value="書籍プレゼント">書籍プレゼント</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>負担者</label>
+        <select id="ev-return-payer">
+          <option value="">選択</option>
+          <option value="ValueBooks">ValueBooks</option>
+          <option value="参加者負担なし">参加者負担なし</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>書籍プレゼント等の還元内容（詳細）</label>
+      <textarea id="ev-return-detail" placeholder="例：参加者全員に絵本1冊プレゼント（〇〇シリーズ）"></textarea>
+    </div>
+
+    <div style="font-size:.8rem;font-weight:700;color:var(--brown-mid);margin-bottom:6px;margin-top:10px;">５〜７．寄付</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>寄付予定金額（円）</label>
+        <input type="number" id="ev-don-plan" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>寄付先（予定）</label>
+        <input type="text" id="ev-don-target-plan" placeholder="例：〇〇子ども食堂">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>寄付金額の算出方法</label>
+      <textarea id="ev-don-calc" placeholder="例：売上の50%、還元後の残額全額など"></textarea>
+    </div>
+
+    <div style="font-size:.8rem;font-weight:700;color:var(--brown-mid);margin-bottom:6px;margin-top:10px;">８．釣銭（小口現金）対応</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>借入金額（円）</label>
+        <input type="number" id="ev-petty-borrow" min="0" placeholder="0（借りない場合は空白）">
+      </div>
+      <div class="form-group">
+        <label>返却日</label>
+        <input type="date" id="ev-petty-return-date">
+      </div>
+      <div class="form-group">
+        <label>返却金額（円）</label>
+        <input type="number" id="ev-petty-return-amt" min="0" placeholder="0">
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:8px;">
+      <label>メモ</label>
+      <textarea id="ev-memo" placeholder="特記事項など"></textarea>
+    </div>
+
+    <div class="form-row mt-12" style="justify-content:flex-end;">
+      <button class="btn btn-outline" onclick="closeModal('event-modal')">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveEvent()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHILD MODAL ═══ -->
+<div class="modal-overlay" id="child-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="child-modal-title">👧 子ども記録の追加</span>
+      <button class="modal-close" onclick="closeModal('child-modal')">✕</button>
+    </div>
+    <input type="hidden" id="child-id">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>お名前（ニックネームでもOK）</label>
+        <input type="text" id="ch-name" placeholder="例：たろうくん">
+      </div>
+      <div class="form-group">
+        <label>参加イベント</label>
+        <select id="ch-event"></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>学年・年齢</label>
+        <input type="text" id="ch-grade" placeholder="例：小3・8歳">
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;">📋 計画シート（写真・スキャン）</div>
+    <div class="file-input-area" onclick="document.getElementById('ch-plan-file').click()">
+      <input type="file" id="ch-plan-file" accept="image/*" multiple onchange="previewImages(this,'ch-plan-preview')">
+      📎 タップしてファイルを選択（複数可）
+    </div>
+    <div class="img-preview-grid" id="ch-plan-preview"></div>
+
+    <hr class="divider">
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;">💰 収支振り返りシート（写真・スキャン）</div>
+    <div class="file-input-area" onclick="document.getElementById('ch-keisan-file').click()">
+      <input type="file" id="ch-keisan-file" accept="image/*" multiple onchange="previewImages(this,'ch-keisan-preview')">
+      📎 タップしてファイルを選択
+    </div>
+    <div class="img-preview-grid" id="ch-keisan-preview"></div>
+
+    <hr class="divider">
+    <div style="font-weight:700;font-size:.9rem;margin-bottom:10px;">📖 しおり振り返りシート（写真・スキャン）</div>
+    <div class="file-input-area" onclick="document.getElementById('ch-shiori-file').click()">
+      <input type="file" id="ch-shiori-file" accept="image/*" multiple onchange="previewImages(this,'ch-shiori-preview')">
+      📎 タップしてファイルを選択
+    </div>
+    <div class="img-preview-grid" id="ch-shiori-preview"></div>
+
+    <hr class="divider">
+    <div class="form-group">
+      <label>スタッフメモ（任意）</label>
+      <textarea id="ch-memo" placeholder="印象に残ったこと、子どもの様子など"></textarea>
+    </div>
+
+    <div class="form-row mt-12" style="justify-content:flex-end;">
+      <button class="btn btn-outline" onclick="closeModal('child-modal')">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveChild()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DONATION MODAL ═══ -->
+<div class="modal-overlay" id="donation-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <span>🎁 寄付を記録</span>
+      <button class="modal-close" onclick="closeModal('donation-modal')">✕</button>
+    </div>
+    <input type="hidden" id="don-id">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>寄付日</label>
+        <input type="date" id="don-date">
+      </div>
+      <div class="form-group">
+        <label>寄付先</label>
+        <input type="text" id="don-target" placeholder="例：〇〇子ども食堂">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>金額（円）</label>
+        <input type="number" id="don-amount" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>元イベント</label>
+        <select id="don-event">
+          <option value="">未指定</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>備考</label>
+      <textarea id="don-memo" placeholder="寄付の経緯、渡し方など"></textarea>
+    </div>
+
+    <div class="form-row mt-12" style="justify-content:flex-end;">
+      <button class="btn btn-outline" onclick="closeModal('donation-modal')">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveDonation()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LIGHTBOX ═══ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+// ─── State ───
+let state = {
+  events: [],
+  children: [],
+  donations: []
+};
+
+// Temp image buffers for child modal
+let tempImages = { plan: [], keisan: [], shiori: [] };
+
+// ─── Persist ───
+function save() {
+  try { localStorage.setItem('kodomo_honya', JSON.stringify(state)); } catch(e) {}
+}
+function load() {
+  try {
+    const s = localStorage.getItem('kodomo_honya');
+    if (s) state = JSON.parse(s);
+  } catch(e) {}
+}
+
+// ─── Tab switch ───
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'events') renderEvents();
+  if (tab === 'children') renderChildren();
+  if (tab === 'donations') renderDonations();
+}
+
+// ─── Utilities ───
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+function fmt(n) { return Number(n||0).toLocaleString(); }
+function today() { return new Date().toISOString().slice(0,10); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+
+function getEvent(id) { return state.events.find(e => e.id === id); }
+
+// ─── Dashboard ───
+function renderDashboard() {
+  const totalOnBooks = state.events.reduce((a,e) => a + Number(e.onbooks||0), 0);
+  const totalOnAmt   = state.events.reduce((a,e) => a + Number(e.onamt||0), 0);
+  const totalSales   = state.events.reduce((a,e) => a + Number(e.sales||0), 0);
+  const totalDon     = state.donations.reduce((a,d) => a + Number(d.amount||0), 0);
+  const totalChildren = state.children.length;
+
+  document.getElementById('stat-events').textContent   = state.events.length;
+  document.getElementById('stat-children').textContent = totalChildren;
+  document.getElementById('stat-onbooks').textContent  = fmt(totalOnBooks);
+  document.getElementById('stat-onamt').textContent    = fmt(totalOnAmt);
+  document.getElementById('stat-sales').textContent    = fmt(totalSales);
+  document.getElementById('stat-donations').textContent= fmt(totalDon);
+
+  // Event summary table
+  const tbody = document.getElementById('dashboard-event-body');
+  if (state.events.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">イベントを登録してください</td></tr>';
+  } else {
+    tbody.innerHTML = state.events.map(ev => {
+      const profit = (Number(ev.sales||0)) - (Number(ev.cost||0));
+      const profitClass = profit >= 0 ? 'text-green' : 'text-red';
+      const cnt = state.children.filter(c => c.eventId === ev.id).length;
+      return `<tr>
+        <td>${ev.date}</td>
+        <td>${ev.name}</td>
+        <td>${cnt || ev.childCount || 0}人</td>
+        <td>${fmt(ev.sales)}円</td>
+        <td>${fmt(ev.cost)}円</td>
+        <td class="${profitClass} fw-bold">${profit>=0?'+':''}${fmt(profit)}円</td>
+        <td>${fmt(ev.onbooks)}冊</td>
+        <td>${fmt(ev.onamt)}円</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Donation summary
+  const donMap = {};
+  state.donations.forEach(d => {
+    if (!donMap[d.target]) donMap[d.target] = {amt:0, cnt:0};
+    donMap[d.target].amt += Number(d.amount||0);
+    donMap[d.target].cnt++;
+  });
+  const dbody = document.getElementById('dashboard-donation-body');
+  const keys = Object.keys(donMap);
+  if (keys.length === 0) {
+    dbody.innerHTML = '<tr><td colspan="3" class="empty">寄付記録を登録してください</td></tr>';
+  } else {
+    dbody.innerHTML = keys.map(k => `
+      <tr>
+        <td>${k}</td>
+        <td class="fw-bold">${fmt(donMap[k].amt)}円</td>
+        <td>${donMap[k].cnt}件</td>
+      </tr>`).join('');
+  }
+}
+
+// ─── Events ───
+function calcFeeTotal() {
+  const unit  = Number(document.getElementById('ev-fee-unit').value||0);
+  const count = Number(document.getElementById('ev-fee-count').value||0);
+  document.getElementById('ev-fee-total').value = unit && count ? `${fmt(unit*count)}円` : '';
+}
+
+function openEventModal(id) {
+  document.getElementById('event-modal-title').textContent = id ? '📅 イベント編集' : '📅 イベント登録';
+  const ev = id ? getEvent(id) : null;
+  const g = (fieldId, prop, def='') => document.getElementById(fieldId).value = ev ? (ev[prop]||def) : def;
+  g('event-id','id'); g('ev-date','date'); if(!ev) document.getElementById('ev-date').value=today();
+  g('ev-name','name'); g('ev-place','place'); g('ev-child-count','childCount');
+  g('ev-sales','sales'); g('ev-cost','cost');
+  g('ev-onbooks','onbooks'); g('ev-onamt','onamt');
+  g('ev-fee-unit','feeUnit'); g('ev-fee-count','feeCount'); g('ev-fee-method','feeMethod');
+  g('ev-shop-sales','shopSales');
+  g('ev-return-amount','returnAmount'); g('ev-return-method','returnMethod');
+  g('ev-return-payer','returnPayer'); g('ev-return-detail','returnDetail');
+  g('ev-don-plan','donPlan'); g('ev-don-target-plan','donTargetPlan'); g('ev-don-calc','donCalc');
+  g('ev-petty-borrow','pettyBorrow'); g('ev-petty-return-date','pettyReturnDate');
+  g('ev-petty-return-amt','pettyReturnAmt');
+  g('ev-memo','memo');
+  calcFeeTotal();
+  // attach auto-calc
+  ['ev-fee-unit','ev-fee-count'].forEach(id => {
+    document.getElementById(id).oninput = calcFeeTotal;
+  });
+  openModal('event-modal');
+}
+
+function saveEvent() {
+  const id = document.getElementById('event-id').value;
+  const v = (fieldId) => document.getElementById(fieldId).value.trim();
+  const ev = {
+    id: id || uid(),
+    date: v('ev-date'), name: v('ev-name'), place: v('ev-place'),
+    childCount: v('ev-child-count'),
+    sales: v('ev-sales'), cost: v('ev-cost'),
+    onbooks: v('ev-onbooks'), onamt: v('ev-onamt'),
+    feeUnit: v('ev-fee-unit'), feeCount: v('ev-fee-count'), feeMethod: v('ev-fee-method'),
+    shopSales: v('ev-shop-sales'),
+    returnAmount: v('ev-return-amount'), returnMethod: v('ev-return-method'),
+    returnPayer: v('ev-return-payer'), returnDetail: v('ev-return-detail'),
+    donPlan: v('ev-don-plan'), donTargetPlan: v('ev-don-target-plan'), donCalc: v('ev-don-calc'),
+    pettyBorrow: v('ev-petty-borrow'), pettyReturnDate: v('ev-petty-return-date'),
+    pettyReturnAmt: v('ev-petty-return-amt'),
+    memo: v('ev-memo')
+  };
+  if (!ev.name) { alert('イベント名を入力してください'); return; }
+  if (id) { const i = state.events.findIndex(e=>e.id===id); state.events[i] = ev; }
+  else state.events.push(ev);
+  state.events.sort((a,b)=>a.date<b.date?-1:1);
+  save();
+  closeModal('event-modal');
+  renderEvents();
+  updateEventSelects();
+}
+
+function deleteEvent(id) {
+  if (!confirm('このイベントを削除しますか？')) return;
+  state.events = state.events.filter(e=>e.id!==id);
+  save();
+  renderEvents();
+  updateEventSelects();
+}
+
+function renderEvents() {
+  const el = document.getElementById('events-list');
+  if (state.events.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>イベントがまだありません</div>';
+    return;
+  }
+  el.innerHTML = state.events.map(ev => {
+    const profit = Number(ev.sales||0) - Number(ev.cost||0);
+    const pClass = profit >= 0 ? 'text-green' : 'text-red';
+    const cnt = state.children.filter(c=>c.eventId===ev.id).length;
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-family:'Noto Serif JP',serif;font-size:1.05rem;font-weight:700;">${ev.name}</div>
+          <div style="font-size:.82rem;color:var(--brown-mid);margin-top:2px;">📅 ${ev.date}　📍 ${ev.place||'—'}　👧 ${cnt || ev.childCount || 0}人</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-outline btn-sm" onclick="openEventModal('${ev.id}')">編集</button>
+          <button class="btn btn-green btn-sm" onclick="exportKeijiReport('${ev.id}')">📄 経理出力</button>
+          <button class="btn btn-red btn-sm" onclick="deleteEvent('${ev.id}')">削除</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:14px;">
+        <div style="background:var(--green-light);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:.75rem;color:var(--green);">売上</div>
+          <div style="font-weight:700;">${fmt(ev.sales)}円</div>
+        </div>
+        <div style="background:var(--red-light);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:.75rem;color:var(--red);">費用</div>
+          <div style="font-weight:700;">${fmt(ev.cost)}円</div>
+        </div>
+        <div style="background:var(--blue-light);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:.75rem;color:var(--blue);">収支</div>
+          <div class="fw-bold ${pClass}">${profit>=0?'+':''}${fmt(profit)}円</div>
+        </div>
+        <div style="background:var(--yellow-light);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:.75rem;color:#7A6200;">ON本</div>
+          <div style="font-weight:700;">${fmt(ev.onbooks)}冊 / ${fmt(ev.onamt)}円</div>
+        </div>
+      </div>
+      ${ev.memo ? `<div style="margin-top:10px;font-size:.83rem;color:var(--brown-mid);">📝 ${ev.memo}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ─── Children ───
+function openChildModal(id) {
+  tempImages = { plan: [], keisan: [], shiori: [] };
+  document.getElementById('ch-plan-preview').innerHTML = '';
+  document.getElementById('ch-keisan-preview').innerHTML = '';
+  document.getElementById('ch-shiori-preview').innerHTML = '';
+  document.getElementById('ch-plan-file').value = '';
+  document.getElementById('ch-keisan-file').value = '';
+  document.getElementById('ch-shiori-file').value = '';
+
+  // Populate event select
+  const sel = document.getElementById('ch-event');
+  sel.innerHTML = '<option value="">イベントを選択</option>' +
+    state.events.map(e => `<option value="${e.id}">${e.date} ${e.name}</option>`).join('');
+
+  const ch = id ? state.children.find(c=>c.id===id) : null;
+  document.getElementById('child-id').value  = ch ? ch.id : '';
+  document.getElementById('child-modal-title').textContent = ch ? '👧 子ども記録の編集' : '👧 子ども記録の追加';
+  document.getElementById('ch-name').value   = ch ? ch.name : '';
+  document.getElementById('ch-grade').value  = ch ? ch.grade : '';
+  document.getElementById('ch-memo').value   = ch ? ch.memo : '';
+  if (ch) {
+    sel.value = ch.eventId || '';
+    tempImages.plan    = ch.planImgs   || [];
+    tempImages.keisan  = ch.keisanImgs || [];
+    tempImages.shiori  = ch.shioriImgs || [];
+    renderPreviews('ch-plan-preview',    'plan');
+    renderPreviews('ch-keisan-preview',  'keisan');
+    renderPreviews('ch-shiori-preview',  'shiori');
+  }
+  openModal('child-modal');
+}
+
+function renderPreviews(containerId, key) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = tempImages[key].map((src, i) => `
+    <div class="img-thumb" onclick="openLightbox('${src.replace(/'/g,"\\'")}')">
+      <img src="${src}" alt="">
+      <button class="del-img" onclick="event.stopPropagation();removeImg('${key}',${i},'${containerId}')">✕</button>
+    </div>`).join('');
+}
+
+function removeImg(key, idx, containerId) {
+  tempImages[key].splice(idx, 1);
+  renderPreviews(containerId, key);
+}
+
+function previewImages(input, previewId) {
+  const key = previewId === 'ch-plan-preview' ? 'plan'
+            : previewId === 'ch-keisan-preview' ? 'keisan' : 'shiori';
+  const files = Array.from(input.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      tempImages[key].push(e.target.result);
+      renderPreviews(previewId, key);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function saveChild() {
+  const id = document.getElementById('child-id').value;
+  const ch = {
+    id: id || uid(),
+    name: document.getElementById('ch-name').value.trim(),
+    eventId: document.getElementById('ch-event').value,
+    grade: document.getElementById('ch-grade').value.trim(),
+    memo: document.getElementById('ch-memo').value.trim(),
+    planImgs:   [...tempImages.plan],
+    keisanImgs: [...tempImages.keisan],
+    shioriImgs: [...tempImages.shiori]
+  };
+  if (!ch.name) { alert('名前を入力してください'); return; }
+  if (id) { const i = state.children.findIndex(c=>c.id===id); state.children[i] = ch; }
+  else state.children.push(ch);
+  save();
+  closeModal('child-modal');
+  renderChildren();
+}
+
+function deleteChild(id) {
+  if (!confirm('この記録を削除しますか？')) return;
+  state.children = state.children.filter(c=>c.id!==id);
+  save();
+  renderChildren();
+}
+
+function renderChildren() {
+  const filter = document.getElementById('child-event-filter').value;
+  const list = filter ? state.children.filter(c=>c.eventId===filter) : state.children;
+  const el = document.getElementById('children-list');
+
+  if (list.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👧</div>子どもを登録してください</div>';
+    return;
+  }
+  el.innerHTML = list.map(ch => {
+    const ev = getEvent(ch.eventId);
+    const imgSummary = (imgs, label) => imgs && imgs.length > 0
+      ? `<span class="badge badge-green">📎 ${label} ${imgs.length}枚</span>` : '';
+    const imgThumbs = (imgs, label) => imgs && imgs.length > 0 ? `
+      <div style="margin-top:8px;">
+        <div style="font-size:.78rem;color:var(--brown-mid);margin-bottom:4px;">${label}</div>
+        <div class="img-preview-grid">
+          ${imgs.map(src => `<div class="img-thumb" onclick="openLightbox('${src.replace(/'/g,"\\'")}')"><img src="${src}" alt=""></div>`).join('')}
+        </div>
+      </div>` : '';
+
+    return `<div class="card child-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div class="child-name">👧 ${ch.name}</div>
+          <div class="child-meta">${ch.grade||''} ${ev ? `｜ ${ev.date} ${ev.name}` : ''}</div>
+          <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">
+            ${imgSummary(ch.planImgs,'計画シート')}
+            ${imgSummary(ch.keisanImgs,'収支振り返り')}
+            ${imgSummary(ch.shioriImgs,'しおり振り返り')}
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-outline btn-sm" onclick="openChildModal('${ch.id}')">編集</button>
+          <button class="btn btn-red btn-sm" onclick="deleteChild('${ch.id}')">削除</button>
+        </div>
+      </div>
+      ${imgThumbs(ch.planImgs,'📋 計画シート')}
+      ${imgThumbs(ch.keisanImgs,'💰 収支振り返りシート')}
+      ${imgThumbs(ch.shioriImgs,'📖 しおり振り返りシート')}
+      ${ch.memo ? `<div style="margin-top:8px;font-size:.83rem;color:var(--brown-mid);">📝 ${ch.memo}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ─── Donations ───
+function openDonationModal(id) {
+  const sel = document.getElementById('don-event');
+  sel.innerHTML = '<option value="">未指定</option>' +
+    state.events.map(e=>`<option value="${e.id}">${e.date} ${e.name}</option>`).join('');
+  const d = id ? state.donations.find(x=>x.id===id) : null;
+  document.getElementById('don-id').value     = d ? d.id : '';
+  document.getElementById('don-date').value   = d ? d.date : today();
+  document.getElementById('don-target').value = d ? d.target : '';
+  document.getElementById('don-amount').value = d ? d.amount : '';
+  document.getElementById('don-event').value  = d ? d.eventId : '';
+  document.getElementById('don-memo').value   = d ? d.memo : '';
+  openModal('donation-modal');
+}
+
+function saveDonation() {
+  const id = document.getElementById('don-id').value;
+  const d = {
+    id: id || uid(),
+    date:    document.getElementById('don-date').value,
+    target:  document.getElementById('don-target').value.trim(),
+    amount:  document.getElementById('don-amount').value,
+    eventId: document.getElementById('don-event').value,
+    memo:    document.getElementById('don-memo').value.trim()
+  };
+  if (!d.target) { alert('寄付先を入力してください'); return; }
+  if (id) { const i = state.donations.findIndex(x=>x.id===id); state.donations[i] = d; }
+  else state.donations.push(d);
+  state.donations.sort((a,b)=>a.date<b.date?-1:1);
+  save();
+  closeModal('donation-modal');
+  renderDonations();
+}
+
+function deleteDonation(id) {
+  if (!confirm('この寄付記録を削除しますか？')) return;
+  state.donations = state.donations.filter(d=>d.id!==id);
+  save();
+  renderDonations();
+}
+
+function renderDonations() {
+  const tbody = document.getElementById('donation-body');
+  if (state.donations.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">寄付記録がありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.donations.map(d => {
+    const ev = getEvent(d.eventId);
+    return `<tr>
+      <td>${d.date}</td>
+      <td>${d.target}</td>
+      <td class="fw-bold">${fmt(d.amount)}円</td>
+      <td>${ev ? ev.name : '—'}</td>
+      <td style="font-size:.82rem;color:var(--brown-mid);">${d.memo||''}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="openDonationModal('${d.id}')">編集</button>
+        <button class="btn btn-red btn-sm" onclick="deleteDonation('${d.id}')">削除</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── Event selects sync ───
+function updateEventSelects() {
+  const filter = document.getElementById('child-event-filter');
+  const cur = filter.value;
+  filter.innerHTML = '<option value="">すべて</option>' +
+    state.events.map(e=>`<option value="${e.id}">${e.date} ${e.name}</option>`).join('');
+  filter.value = cur;
+}
+
+// ─── Lightbox ───
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// ─── 経理提出レポート出力 ───
+function exportKeijiReport(evId) {
+  const ev = getEvent(evId);
+  if (!ev) return;
+  const cnt = state.children.filter(c=>c.eventId===evId).length || Number(ev.childCount||0);
+  const feeTotal = Number(ev.feeUnit||0) * Number(ev.feeCount||0);
+  const donations = state.donations.filter(d=>d.eventId===evId);
+  const donTotal = donations.reduce((a,d)=>a+Number(d.amount||0),0);
+  const profit = Number(ev.sales||0) - Number(ev.cost||0);
+
+  const row = (label, value, note='') => value || value === 0
+    ? `<tr><th>${label}</th><td>${value}${note ? `<span class="note">${note}</span>` : ''}</td></tr>`
+    : `<tr><th>${label}</th><td class="empty-cell">—</td></tr>`;
+  const section = (num, title) =>
+    `<tr class="section-row"><td colspan="2"><span class="sec-num">${num}</span>${title}</td></tr>`;
+
+  const donRows = donations.length > 0
+    ? donations.map(d=>`<tr><th style="padding-left:24px;">　${d.date} ${d.target}</th><td>${fmt(d.amount)}円 ${d.memo||''}</td></tr>`).join('')
+    : `<tr><td colspan="2" class="empty-cell" style="padding-left:24px;">　記録なし</td></tr>`;
+
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>経理提出書類 - ${ev.name}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Noto+Serif+JP:wght@700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Zen Kaku Gothic New', sans-serif; background: #fff; color: #222; font-size: 13px; }
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 32px; }
+  .page-title { font-family: 'Noto Serif JP', serif; font-size: 1.4rem; border-bottom: 3px solid #FFE033; padding-bottom: 10px; margin-bottom: 6px; }
+  .page-sub { font-size: .85rem; color: #666; margin-bottom: 28px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+  th, td { padding: 9px 12px; border: 1px solid #ddd; text-align: left; vertical-align: top; }
+  th { background: #f8f4ee; font-weight: 700; width: 46%; white-space: nowrap; }
+  td { background: #fff; }
+  .section-row td { background: #3B2A1A; color: #FFE033; font-weight: 700; font-size: .9rem; padding: 7px 12px; border: none; }
+  .sec-num { display: inline-block; background: #FFE033; color: #3B2A1A; border-radius: 3px; padding: 0 6px; margin-right: 8px; font-size: .8rem; }
+  .empty-cell { color: #aaa; }
+  .note { display: block; font-size: .78rem; color: #888; margin-top: 2px; }
+  .total-row th, .total-row td { background: #FFF5AA; font-weight: 700; }
+  .footer { margin-top: 24px; font-size: .78rem; color: #aaa; text-align: right; }
+  @media print {
+    body { font-size: 12px; }
+    .page { padding: 20px; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div style="text-align:right;margin-bottom:16px;" class="no-print">
+    <button onclick="window.print()" style="padding:8px 18px;background:#3B2A1A;color:#FFE033;border:none;border-radius:6px;font-size:.9rem;cursor:pointer;font-weight:700;">🖨️ 印刷 / PDF保存</button>
+  </div>
+  <div class="page-title">📚 こどもほんや 経理提出書類</div>
+  <div class="page-sub">作成日：${today()} ／ 提出者：ValueBooks ブックギフトプロジェクト</div>
+
+  <table>
+    ${section('基本','イベント概要')}
+    ${row('イベント名', ev.name)}
+    ${row('開催日', ev.date)}
+    ${row('開催場所', ev.place || '—')}
+    ${row('1. 参加人数（保険会社報告用）', cnt ? `${cnt}人` : '—')}
+
+    ${section('2','参加費売上')}
+    ${row('参加費単価', ev.feeUnit ? `${fmt(ev.feeUnit)}円` : '—')}
+    ${row('参加人数（参加費対象）', ev.feeCount ? `${ev.feeCount}人` : '—')}
+    ${row('合計金額', feeTotal ? `${fmt(feeTotal)}円` : '—')}
+    ${row('徴収方法', ev.feeMethod || '—')}
+
+    ${section('3','参加者が本屋さんを運営して売り上げた金額')}
+    ${row('売上金額合計', ev.shopSales ? `${fmt(ev.shopSales)}円` : '—')}
+
+    ${section('4','参加者への還元内容')}
+    ${row('還元金額', ev.returnAmount ? `${fmt(ev.returnAmount)}円` : 'なし')}
+    ${row('還元方法', ev.returnMethod || '—')}
+    ${row('負担者', ev.returnPayer || '—')}
+    ${row('書籍プレゼント等の還元内容', ev.returnDetail || '—')}
+
+    ${section('5〜7','寄付関連')}
+    ${row('寄付予定金額', ev.donPlan ? `${fmt(ev.donPlan)}円` : '—')}
+    ${row('寄付先（予定）', ev.donTargetPlan || '—')}
+    ${row('寄付金額の算出方法', ev.donCalc || '—')}
+    <tr class="section-row"><td colspan="2" style="background:#4a3828;font-size:.8rem;">　実績（寄付管理タブより）</td></tr>
+    ${donRows}
+    ${row('寄付実績合計', donTotal ? `${fmt(donTotal)}円` : '—')}
+
+    ${section('8','釣銭対応（上田原小口現金）')}
+    ${row('借入金額', ev.pettyBorrow ? `${fmt(ev.pettyBorrow)}円` : '借入なし')}
+    ${row('返却日', ev.pettyReturnDate || '—')}
+    ${row('返却金額', ev.pettyReturnAmt ? `${fmt(ev.pettyReturnAmt)}円` : '—')}
+
+    ${section('参考','収支サマリー')}
+    ${row('売上合計（参加費＋子ども本屋等）', ev.sales ? `${fmt(ev.sales)}円` : '—')}
+    ${row('費用合計', ev.cost ? `${fmt(ev.cost)}円` : '—')}
+    <tr class="total-row">${row('収支', `${profit>=0?'+':''}${fmt(profit)}円`)}</tr>
+    ${row('ON本 停止冊数', ev.onbooks ? `${fmt(ev.onbooks)}冊` : '—')}
+    ${row('ON本 金額', ev.onamt ? `${fmt(ev.onamt)}円` : '—')}
+
+    ${ev.memo ? `${section('メモ','')}${row('特記事項', ev.memo)}` : ''}
+  </table>
+
+  <div class="footer">こどもほんや 帳簿システム ／ ValueBooks ブックギフトプロジェクト</div>
+</div>
+</body>
+</html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+// ─── Excel export ───
+function exportExcel() {
+  let csv = '\uFEFF'; // BOM
+
+  csv += '【イベント一覧】\n';
+  csv += '開催日,イベント名,場所,参加者数,売上,費用,収支,ON本冊数,ON本金額,メモ\n';
+  state.events.forEach(ev => {
+    const profit = Number(ev.sales||0) - Number(ev.cost||0);
+    const cnt = state.children.filter(c=>c.eventId===ev.id).length;
+    csv += [ev.date, ev.name, ev.place, cnt||ev.childCount||0,
+            ev.sales||0, ev.cost||0, profit, ev.onbooks||0, ev.onamt||0,
+            (ev.memo||'').replace(/,/g,'、')].join(',') + '\n';
+  });
+
+  csv += '\n【子ども記録一覧】\n';
+  csv += '名前,学年,参加イベント,計画シート枚数,収支振り返り枚数,しおり振り返り枚数,スタッフメモ\n';
+  state.children.forEach(ch => {
+    const ev = getEvent(ch.eventId);
+    csv += [ch.name, ch.grade||'',
+            ev ? ev.name : '',
+            (ch.planImgs||[]).length,
+            (ch.keisanImgs||[]).length,
+            (ch.shioriImgs||[]).length,
+            (ch.memo||'').replace(/,/g,'、')].join(',') + '\n';
+  });
+
+  csv += '\n【寄付一覧】\n';
+  csv += '寄付日,寄付先,金額,元イベント,備考\n';
+  state.donations.forEach(d => {
+    const ev = getEvent(d.eventId);
+    csv += [d.date, d.target, d.amount||0,
+            ev ? ev.name : '',
+            (d.memo||'').replace(/,/g,'、')].join(',') + '\n';
+  });
+
+  // Summary
+  const totalOn  = state.events.reduce((a,e)=>a+Number(e.onbooks||0),0);
+  const totalOnA = state.events.reduce((a,e)=>a+Number(e.onamt||0),0);
+  const totalDon = state.donations.reduce((a,d)=>a+Number(d.amount||0),0);
+  csv += '\n【集計サマリー】\n';
+  csv += `イベント数,${state.events.length}\n`;
+  csv += `子ども記録数,${state.children.length}\n`;
+  csv += `ON本累計冊数,${totalOn}\n`;
+  csv += `ON本累計金額,${totalOnA}\n`;
+  csv += `寄付総額,${totalDon}\n`;
+
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `こどもほんや_集計_${today()}.csv`;
+  a.click();
+}
+
+
+// ─── 公開用JSON書き出し ───
+function exportPublicJSON() {
+  const publicData = {
+    exportedAt: new Date().toISOString(),
+    summary: {
+      totalEvents:    state.events.length,
+      totalChildren:  state.children.length,
+      totalOnBooks:   state.events.reduce((a,e)=>a+Number(e.onbooks||0),0),
+      totalOnAmt:     state.events.reduce((a,e)=>a+Number(e.onamt||0),0),
+      totalSales:     state.events.reduce((a,e)=>a+Number(e.sales||0),0),
+      totalDonations: state.donations.reduce((a,d)=>a+Number(d.amount||0),0)
+    },
+    events: state.events.map(ev => ({
+      date: ev.date, name: ev.name, place: ev.place,
+      childCount: state.children.filter(c=>c.eventId===ev.id).length || Number(ev.childCount||0),
+      sales: Number(ev.sales||0), cost: Number(ev.cost||0),
+      profit: Number(ev.sales||0) - Number(ev.cost||0),
+      onbooks: Number(ev.onbooks||0), onamt: Number(ev.onamt||0),
+      shopSales: Number(ev.shopSales||0),
+      donPlan: Number(ev.donPlan||0), donTargetPlan: ev.donTargetPlan||'',
+      donCalc: ev.donCalc||'', memo: ev.memo||''
+    })),
+    donations: state.donations.map(d => {
+      const ev = getEvent(d.eventId);
+      return { date: d.date, target: d.target, amount: Number(d.amount||0),
+               eventName: ev ? ev.name : '', memo: d.memo||'' };
+    }),
+    donationSummary: (() => {
+      const map = {};
+      state.donations.forEach(d => {
+        if (!map[d.target]) map[d.target] = { target: d.target, total: 0, count: 0 };
+        map[d.target].total += Number(d.amount||0);
+        map[d.target].count++;
+      });
+      return Object.values(map);
+    })()
+  };
+  const json = JSON.stringify(publicData, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'data.json';
+  a.click();
+  alert('✅ data.json を書き出しました！\nGitHubの kodomo-honya リポジトリにアップロードしてください。');
+}
+
+// ─── Init ───
+load();
+renderDashboard();
+updateEventSelects();
+</script>
+</body>
+</html>
