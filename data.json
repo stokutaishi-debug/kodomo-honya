@@ -1,0 +1,31 @@
+{
+  "exportedAt": "2026-06-18T07:43:25.792Z",
+  "summary": {
+    "totalEvents": 1,
+    "totalChildren": 1,
+    "totalOnBooks": 0,
+    "totalOnAmt": 0,
+    "totalSales": 21170,
+    "totalDonations": 0
+  },
+  "events": [
+    {
+      "date": "2026-06-06",
+      "name": "だれかのニコッ",
+      "place": "安曇野ちひろ公園",
+      "childCount": 1,
+      "sales": 21170,
+      "cost": 0,
+      "profit": 21170,
+      "onbooks": 0,
+      "onamt": 0,
+      "shopSales": 21170,
+      "donPlan": 21170,
+      "donTargetPlan": "松川村子ども食堂(予定)",
+      "donCalc": "こどもほんや売上の全額（予定）",
+      "memo": ""
+    }
+  ],
+  "donations": [],
+  "donationSummary": []
+}
